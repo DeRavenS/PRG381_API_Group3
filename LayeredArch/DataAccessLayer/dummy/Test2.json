@@ -1,0 +1,44 @@
+{
+    "customer_id": 1,
+    "customerName": "Michael",
+    "customerSurname": "Schmulian",
+    "customerPhone": "0825251680",
+    "customerEmail": "michaelschmulian@gmail.com",
+    "admin": true,
+    "password": "123456",
+    "username": "Mike7652",
+    "Booking":[{
+        "bookingID":1,
+        "bookingDateAndTime": "2012/08/01 12:19:26",
+        "bookingCost": 3000.85,
+        "Theme":[{
+            "themeID":1,
+            "description":"Something about the theme",
+            "colors":["Red","Green","Blue"]
+        }],
+        "type": "Birthday",
+        "adults":10,
+        "children":7,
+        "Venue":[{
+            "venueID":1,
+            "venueEmail": "venuepta@gmail.com",
+            "venuePhone": "0820488332",
+            "venueSpokesPerson": "John",
+            "streetAddress": "19 Grysbok Street Ninapark",
+            "city": "Pretoria",
+            "province": "Gauteng",
+            "cost": 10000.90
+            }],
+        "Shipment":[{
+            "shipmentID":1,
+            "shipmentDT":"2012/06/01 05:34:01",
+            "shipmentitems":[{
+                "itemID":1,
+                "itemType":"Hats",
+                "itemName": "Funny Hats",
+                "itemCost": 50.00,
+                "quantity": 10
+                }]
+            }]
+    }]
+}
