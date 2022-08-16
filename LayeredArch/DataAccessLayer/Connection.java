@@ -1,3 +1,4 @@
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,21 +37,23 @@ public class Connection {
     }
     
     private void insertDummyDocuments(MongoCollection<Document> collection){
-        //Try-catch to check if the Document(JSON file) is added to the database
+        // Try-catch to check if the Document(JSON file) is added to the database
         try {
-            //Create an ArrayList for the Document
+            // Create an ArrayList for the Document
             List<Document> documents = new ArrayList<Document>();
 
-            //Convert JSON file to a String and Add to the ArrayList
-            documents.add(Document.parse(new String(Files.readAllBytes(Paths.get("LayeredArch/DataAccessLayer/dummy/Test1.json")))));
-            documents.add(Document.parse(new String(Files.readAllBytes(Paths.get("LayeredArch/DataAccessLayer/dummy/Test2.json")))));
+            // Cycle through all JSON files in the dummy folder
+            for (int i = 1; i <= (new File("LayeredArch/DataAccessLayer/dummy")).list().length; i++) {
+                // Load json file as a string and convert it into a Document which can be added to an arrayList of documents
+                documents.add(Document.parse(new String(Files.readAllBytes(Paths.get("LayeredArch/DataAccessLayer/dummy/Test"+ i +".json")))));
+            }
 
-            //Insert documents into MongoDB Collection
+            // Insert documents into MongoDB Collection
             collection.insertMany(documents);
 
             System.out.println("Dummy data added successfully.");
         } catch (Exception ex) {
-            System.out.println("Faled to load json");
+            System.out.println("Failed to load json");
         }
     }
 }
