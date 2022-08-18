@@ -1,2 +1,0 @@
-# PRG381_API_Group3
-JAVA API
