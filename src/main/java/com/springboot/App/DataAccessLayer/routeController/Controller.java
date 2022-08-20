@@ -18,6 +18,7 @@ import com.springboot.App.DataAccessLayer.service.RegisterService;
 import com.springboot.App.DataAccessLayer.models.Student;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.Register;
+import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -83,9 +84,15 @@ public class Controller {
      * Routes to INSERT/UPDATE/DELETE/SELECT the Student table in MySQL
      */
 
-    @GetMapping("/student")
-    public List<Student> listStudent(){
-        return StudentService.listAll();
+    @PostMapping("/api/student")
+    public pagedResponse<BrowsedStudent> listStudent(){
+        pagedResponse<BrowsedStudent> response = new pagedResponse<BrowsedStudent>(); 
+        for (Student student  : StudentService.listAll()) {
+            response.items.add(new BrowsedStudent(Integer.toString(student.getStudent_id()),student.getStudent_name(),student.getStudent_address(),student.getStudent_email()));
+        }
+        response.totalItems=response.items.size();
+        response.itemsPerPage=10;
+        return response;
     }
 
     @GetMapping("/student/{student_id}")
@@ -98,10 +105,10 @@ public class Controller {
         }
     }
 
-    @PostMapping("/student")
+   /*  @PostMapping("/api/student")
     public void addStudent(@RequestBody Student student){
         StudentService.save(student);
-    }
+    }*/
 
     @PutMapping("/student/{student_id}")
     public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable Integer student_id){
