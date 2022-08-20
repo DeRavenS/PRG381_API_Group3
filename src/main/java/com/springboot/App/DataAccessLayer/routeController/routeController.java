@@ -1,5 +1,8 @@
 package com.springboot.App.DataAccessLayer.routeController;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,20 +14,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.App.DataAccessLayer.service.AdministratorService;
-import com.springboot.App.DataAccessLayer.service.StudentsService;
-import com.springboot.App.DataAccessLayer.service.RegisterService;
-
-import com.springboot.App.DataAccessLayer.models.Student;
 import com.springboot.App.DataAccessLayer.models.Administrator;
-import com.springboot.App.DataAccessLayer.models.Register;
 import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
-
-import java.util.List;
-import java.util.NoSuchElementException;
+import com.springboot.App.DataAccessLayer.models.Register;
+import com.springboot.App.DataAccessLayer.models.Student;
+import com.springboot.App.DataAccessLayer.service.AdministratorService;
+import com.springboot.App.DataAccessLayer.service.RegisterService;
+import com.springboot.App.DataAccessLayer.service.StudentsService;
 
 @RestController
-public class Controller {
+public class routeController {
    
     @Autowired
     private AdministratorService AdminService;
@@ -39,12 +38,12 @@ public class Controller {
      * Routes to INSERT/UPDATE/DELETE/SELECT the Administartor table in MySQL
      */
 
-    @GetMapping("/admin")
+    @GetMapping("/api/admin")
     public List<Administrator> listAdmin(){
         return AdminService.listAll();
     }
 
-    @GetMapping("/admin/{admin_id}")
+    @GetMapping("/api/admin/{admin_id}")
     public ResponseEntity<Administrator> getAdmin(@PathVariable Integer admin_id){
         try {
             Administrator admin = AdminService.get(admin_id);
@@ -54,12 +53,12 @@ public class Controller {
         }
     }
 
-    @PostMapping("/admin")
+    @PostMapping("/api/admin")
     public void addAdmin(@RequestBody Administrator admin){
         AdminService.save(admin);
     }
 
-    @PutMapping("/admin/{admin_id}")
+    @PutMapping("/api/admin/{admin_id}")
     public ResponseEntity<Administrator> updateAdmin(@RequestBody Administrator admin, @PathVariable Integer admin_id){
         try {
             Administrator existAdmin = AdminService.get(admin_id);
@@ -70,7 +69,7 @@ public class Controller {
         }
     }
 
-    @DeleteMapping("/admin/{admin_id}")
+    @DeleteMapping("/api/admin/{admin_id}")
     public ResponseEntity<Administrator> deleteAdmin(@PathVariable Integer admin_id){
         try {
             AdminService.delete(admin_id);
@@ -95,7 +94,7 @@ public class Controller {
         return response;
     }
 
-    @GetMapping("/student/{student_id}")
+    @GetMapping("/api/student/{student_id}")
     public ResponseEntity<Student> getStudent(@PathVariable Integer student_id){
         try {
             Student student = StudentService.get(student_id);
@@ -110,7 +109,7 @@ public class Controller {
         StudentService.save(student);
     }*/
 
-    @PutMapping("/student/{student_id}")
+    @PutMapping("/api/student/{student_id}")
     public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable Integer student_id){
         try {
             Student existStudent = StudentService.get(student_id);
@@ -121,7 +120,7 @@ public class Controller {
         }
     }
 
-    @DeleteMapping("/student/{student_id}")
+    @DeleteMapping("/api/student/{student_id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Integer student_id){
         try {
             StudentService.delete(student_id);
@@ -135,12 +134,12 @@ public class Controller {
      * Routes to INSERT/UPDATE/DELETE/SELECT the Register table in MySQL
      */
 
-    @GetMapping("/register")
+    @GetMapping("/api/register")
     public List<Register> listRegister(){
         return RegisterService.listAll();
     }
 
-    @GetMapping("/register/{register_id}")
+    @GetMapping("/api/register/{register_id}")
     public ResponseEntity<Register> getRegister(@PathVariable Integer register_id){
         try {
             Register register = RegisterService.get(register_id);
@@ -150,12 +149,12 @@ public class Controller {
         }
     }
 
-    @PostMapping("/register")
+    @PostMapping("/api/register")
     public void addStudent(@RequestBody Register register){
         RegisterService.save(register);
     }
 
-    @PutMapping("/register/{register_id}")
+    @PutMapping("/api/register/{register_id}")
     public ResponseEntity<Register> updateRegister(@RequestBody Register register, @PathVariable Integer register_id){
         try {
             Register existRegister = RegisterService.get(register_id);
@@ -166,7 +165,7 @@ public class Controller {
         }
     }
 
-    @DeleteMapping("/register/{register_id}")
+    @DeleteMapping("/api/register/{register_id}")
     public ResponseEntity<Register> deleteRegister(@PathVariable Integer register_id){
         try {
             RegisterService.delete(register_id);

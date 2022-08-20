@@ -6,7 +6,6 @@ public class BrowsedStudent {
     public String studentAddress;
     public String studentEmail;
 
-
     public BrowsedStudent() {
     }
 
