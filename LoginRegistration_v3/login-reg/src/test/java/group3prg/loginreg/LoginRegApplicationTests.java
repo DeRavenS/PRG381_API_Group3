@@ -1,10 +1,10 @@
-package group3.project.test;
+package group3prg.loginreg;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TestApplicationTests {
+class LoginRegApplicationTests {
 
 	@Test
 	void contextLoads() {
