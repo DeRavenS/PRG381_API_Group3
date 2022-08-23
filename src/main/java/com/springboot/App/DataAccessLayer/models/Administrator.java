@@ -7,8 +7,8 @@ import javax.persistence.Id;
 
 @Entity
 public class Administrator {
-    private int admin_id;
-    private String admin_name;
+    private int adminID;
+    private String adminName;
     private String admin_password;
     private String admin_contact;
     private String admin_email;
@@ -18,8 +18,8 @@ public class Administrator {
 
     public Administrator(int admin_id, String admin_name, String admin_password, String admin_contact, String admin_email) {
         super();
-        this.admin_id = admin_id;
-        this.admin_name = admin_name;
+        this.adminID = admin_id;
+        this.adminName = admin_name;
         this.admin_password = admin_password;
         this.admin_contact = admin_contact;
         this.admin_email = admin_email;
@@ -28,19 +28,19 @@ public class Administrator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAdmin_id() {
-        return admin_id;
+        return adminID;
     }
 
     public void setAdmin_id(int admin_id) {
-        this.admin_id = admin_id;
+        this.adminID = admin_id;
     }
 
     public String getAdmin_name() {
-        return admin_name;
+        return adminName;
     }
 
     public void setAdmin_name(String admin_name) {
-        this.admin_name = admin_name;
+        this.adminName = admin_name;
     }
 
     public String getAdmin_email() {

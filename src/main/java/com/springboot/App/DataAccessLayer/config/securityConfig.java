@@ -1,4 +1,4 @@
-package com.springboot.App.DataAccessLayer.config;
+/* package com.springboot.App.DataAccessLayer.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -61,3 +61,4 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
 		.permitAll();
     }
 }
+ */

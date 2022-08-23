@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
 import com.springboot.App.DataAccessLayer.models.Register;
@@ -44,12 +45,13 @@ public class routeController {
     }
 
     @GetMapping("/api/admin/{admin_id}")
-    public ResponseEntity<Administrator> getAdmin(@PathVariable Integer admin_id){
+    public ResponseEntity<DAdmin> getAdmin(@PathVariable Integer adminID){
         try {
-            Administrator admin = AdminService.get(admin_id);
-            return new ResponseEntity<Administrator>(admin, HttpStatus.OK);
+            Administrator admin = AdminService.get(adminID);
+            DAdmin dadmin = new DAdmin(admin.getAdmin_id(), admin.getAdmin_name(), admin.getAdmin_contact(), admin.getAdmin_email());
+            return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Administrator>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
         }
     }
 
