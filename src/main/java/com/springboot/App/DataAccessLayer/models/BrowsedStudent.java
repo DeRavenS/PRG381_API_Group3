@@ -1,4 +1,4 @@
-package DataAccessLayer.models;
+package com.springboot.App.DataAccessLayer.models;
 
 public class BrowsedStudent {
     public String studentID;

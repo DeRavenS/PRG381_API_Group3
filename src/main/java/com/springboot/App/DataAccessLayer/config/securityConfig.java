@@ -1,4 +1,4 @@
-package DataAccessLayer.config;
+package com.springboot.App.DataAccessLayer.config;
 /* package com.springboot.App.DataAccessLayer.config;
 
 import org.springframework.beans.factory.annotation.Autowired;

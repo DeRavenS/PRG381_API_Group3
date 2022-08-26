@@ -1,12 +1,12 @@
-package DataAccessLayer.service;
+package com.springboot.App.DataAccessLayer.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import DataAccessLayer.interfaces.AdministratorRepo;
-import DataAccessLayer.interfaces.DAdmin;
+import com.springboot.App.DataAccessLayer.interfaces.AdministratorRepo;
+import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
 
 @Service
 public class AdministratorService {

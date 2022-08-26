@@ -1,4 +1,4 @@
-package DataAccessLayer.interfaces;
+package com.springboot.App.DataAccessLayer.interfaces;
 
 public class DAdmin {
     int adminID;

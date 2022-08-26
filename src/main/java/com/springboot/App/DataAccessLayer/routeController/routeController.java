@@ -1,4 +1,4 @@
-package DataAccessLayer.routeController;
+package com.springboot.App.DataAccessLayer.routeController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import DataAccessLayer.interfaces.DAdmin;
-import DataAccessLayer.interfaces.DStudent;
-import DataAccessLayer.models.Administrator;
-import DataAccessLayer.models.Register;
-import DataAccessLayer.routeController.service.AdministratorService;
-import DataAccessLayer.routeController.service.RegisterService;
-import DataAccessLayer.routeController.service.StudentsService;
+import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
+import com.springboot.App.DataAccessLayer.interfaces.DStudent;
+import com.springboot.App.DataAccessLayer.models.Administrator;
+import com.springboot.App.DataAccessLayer.models.Register;
+import com.springboot.App.DataAccessLayer.service.AdministratorService;
+import com.springboot.App.DataAccessLayer.service.RegisterService;
+import com.springboot.App.DataAccessLayer.service.StudentsService;
 
 @RestController
 public class routeController {
