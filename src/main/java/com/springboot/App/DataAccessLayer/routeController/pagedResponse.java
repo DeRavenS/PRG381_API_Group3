@@ -9,4 +9,8 @@ public class pagedResponse<T> {
     public int totalItems = 0;
 
     public int itemsPerPage = 0;
+
+    public int page = 0;
+
+    public int pageCount = 0;
 }

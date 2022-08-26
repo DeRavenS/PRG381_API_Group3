@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "administrator")
-public class Administrator {
+public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="admin_id")
@@ -29,7 +29,7 @@ public class Administrator {
 
     
 
-    public Administrator(int adminID, String adminName, String admin_password, String adminContact, String adminEmail) {
+    public Admin(int adminID, String adminName, String admin_password, String adminContact, String adminEmail) {
         this.adminID = adminID;
         this.adminName = adminName;
         this.admin_password = admin_password;
@@ -37,7 +37,7 @@ public class Administrator {
         this.adminEmail = adminEmail;
     }
 
-    public Administrator() {
+    public Admin() {
     }
 
     public int getAdminID() {
