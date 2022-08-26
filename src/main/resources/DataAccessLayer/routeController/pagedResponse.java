@@ -1,4 +1,4 @@
-package com.springboot.App.DataAccessLayer.routeController;
+package DataAccessLayer.routeController;
 
 import java.util.ArrayList;
 import java.util.List;

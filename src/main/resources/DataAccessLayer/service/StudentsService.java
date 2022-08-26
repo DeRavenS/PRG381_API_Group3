@@ -1,31 +1,32 @@
-package com.springboot.App.DataAccessLayer.service;
+package DataAccessLayer.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.springboot.App.DataAccessLayer.interfaces.StudentsRepo;
-import com.springboot.App.DataAccessLayer.models.Student;
+import DataAccessLayer.interfaces.DStudent;
+import DataAccessLayer.interfaces.StudentsRepo;
 
 @Service
 public class StudentsService {
+    
     @Autowired
     private StudentsRepo repo;
 
-    public List<Student> listAll(){
+    public List<DStudent> listAll(){
         return repo.findAll();
     }
 
-    public void save(Student students){
+    public void save(DStudent students){
         repo.save(students);
     }
 
-    public Student get(Integer student_id){
+    public DStudent get(String student_id){
         return repo.findById(student_id).get();
     }
 
-    public void delete(Integer student_id){
+    public void delete(String student_id){
         repo.deleteById(student_id);
     }
 }

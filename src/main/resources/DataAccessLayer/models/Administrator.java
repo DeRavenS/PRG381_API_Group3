@@ -1,4 +1,4 @@
-package com.springboot.App.DataAccessLayer.models;
+package DataAccessLayer.models;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +10,8 @@ public class Administrator {
     private int adminID;
     private String adminName;
     private String admin_password;
-    private String admin_contact;
-    private String admin_email;
+    private String adminContact;
+    private String adminEmail;
 
     public Administrator() {
     }
@@ -21,8 +21,8 @@ public class Administrator {
         this.adminID = admin_id;
         this.adminName = admin_name;
         this.admin_password = admin_password;
-        this.admin_contact = admin_contact;
-        this.admin_email = admin_email;
+        this.adminContact = admin_contact;
+        this.adminEmail = admin_email;
     }
 
     @Id
@@ -44,11 +44,11 @@ public class Administrator {
     }
 
     public String getAdmin_email() {
-        return admin_email;
+        return adminEmail;
     }
 
     public void setAdmin_email(String admin_email) {
-        this.admin_email = admin_email;
+        this.adminEmail = admin_email;
     }
 
     public String getAdmin_password() {
@@ -60,11 +60,11 @@ public class Administrator {
     }
 
     public String getAdmin_contact() {
-        return admin_contact;
+        return adminContact;
     }
 
     public void setAdmin_contact(String admin_contact) {
-        this.admin_contact = admin_contact;
+        this.adminContact = admin_contact;
     }
 
     public Administrator admin_id(int admin_id) {

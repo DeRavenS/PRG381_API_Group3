@@ -1,4 +1,4 @@
-package com.springboot.App.DataAccessLayer.models;
+package DataAccessLayer.models;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

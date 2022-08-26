@@ -1,4 +1,4 @@
-package com.springboot.App.DataAccessLayer.routeController;
+package DataAccessLayer.routeController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
-import com.springboot.App.DataAccessLayer.models.Administrator;
-import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
-import com.springboot.App.DataAccessLayer.models.Register;
-import com.springboot.App.DataAccessLayer.models.Student;
-import com.springboot.App.DataAccessLayer.service.AdministratorService;
-import com.springboot.App.DataAccessLayer.service.RegisterService;
-import com.springboot.App.DataAccessLayer.service.StudentsService;
+import DataAccessLayer.interfaces.DAdmin;
+import DataAccessLayer.interfaces.DStudent;
+import DataAccessLayer.models.Administrator;
+import DataAccessLayer.models.Register;
+import DataAccessLayer.routeController.service.AdministratorService;
+import DataAccessLayer.routeController.service.RegisterService;
+import DataAccessLayer.routeController.service.StudentsService;
 
 @RestController
 public class routeController {
@@ -39,35 +38,26 @@ public class routeController {
      * Routes to INSERT/UPDATE/DELETE/SELECT the Administartor table in MySQL
      */
 
-    @GetMapping("/api/admin")
-    public List<Administrator> listAdmin(){
-        return AdminService.listAll();
-    }
-
     @GetMapping("/api/admin/{admin_id}")
-    public ResponseEntity<DAdmin> getAdmin(@PathVariable Integer adminID){
+    public ResponseEntity<DAdmin> getAdminDetails(@PathVariable Integer adminID){
         try {
-            Administrator admin = AdminService.get(adminID);
-            DAdmin dadmin = new DAdmin(admin.getAdmin_id(), admin.getAdmin_name(), admin.getAdmin_contact(), admin.getAdmin_email());
+            DAdmin admin = AdminService.get(adminID);
+            DAdmin dadmin = new DAdmin(admin.getAdminID(), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
             return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PostMapping("/api/admin")
-    public void addAdmin(@RequestBody Administrator admin){
-        AdminService.save(admin);
-    }
-
     @PutMapping("/api/admin/{admin_id}")
-    public ResponseEntity<Administrator> updateAdmin(@RequestBody Administrator admin, @PathVariable Integer admin_id){
+    public ResponseEntity<DAdmin> updateAdminDetails(@RequestBody DAdmin admin, @PathVariable Integer admin_id){
         try {
-            Administrator existAdmin = AdminService.get(admin_id);
+            DAdmin existAdmin = AdminService.get(admin_id);
+            DAdmin dadmin = new DAdmin(admin.getAdminID(), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
             AdminService.save(admin);
-            return new ResponseEntity<Administrator>(admin, HttpStatus.OK);
+            return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Administrator>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -86,10 +76,10 @@ public class routeController {
      */
 
     @PostMapping("/api/student")
-    public pagedResponse<BrowsedStudent> listStudent(){
-        pagedResponse<BrowsedStudent> response = new pagedResponse<BrowsedStudent>(); 
-        for (Student student  : StudentService.listAll()) {
-            response.items.add(new BrowsedStudent(Integer.toString(student.getStudent_id()),student.getStudent_name(),student.getStudent_address(),student.getStudent_email()));
+    public pagedResponse<DStudent> listStudent(){
+        pagedResponse<DStudent> response = new pagedResponse<DStudent>(); 
+        for (DStudent student  : StudentService.listAll()) {
+            response.items.add(new DStudent((student.getStudentID()),student.getStudentName(),student.getStudentAddress(),student.getStudentEmail(), student.getCourses()));
         }
         response.totalItems=response.items.size();
         response.itemsPerPage=10;
@@ -97,12 +87,12 @@ public class routeController {
     }
 
     @GetMapping("/api/student/{student_id}")
-    public ResponseEntity<Student> getStudent(@PathVariable Integer student_id){
+    public ResponseEntity<DStudent> getStudentDetails(@PathVariable String student_id){
         try {
-            Student student = StudentService.get(student_id);
-            return new ResponseEntity<Student>(student, HttpStatus.OK);
+            DStudent student = StudentService.get(student_id);
+            return new ResponseEntity<DStudent>(student, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -112,23 +102,23 @@ public class routeController {
     }*/
 
     @PutMapping("/api/student/{student_id}")
-    public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable Integer student_id){
+    public ResponseEntity<DStudent> updateStudentDetails(@RequestBody DStudent student, @PathVariable String student_id){
         try {
-            Student existStudent = StudentService.get(student_id);
+            DStudent existStudent = StudentService.get(student_id);
             StudentService.save(student);
-            return new ResponseEntity<Student>(student, HttpStatus.OK);
+            return new ResponseEntity<DStudent>(student, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/api/student/{student_id}")
-    public ResponseEntity<Student> deleteStudent(@PathVariable Integer student_id){
+    public ResponseEntity<DStudent> deleteStudent(@PathVariable String student_id){
         try {
             StudentService.delete(student_id);
-            return new ResponseEntity<Student>(HttpStatus.OK);
+            return new ResponseEntity<DStudent>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         }
     }
 

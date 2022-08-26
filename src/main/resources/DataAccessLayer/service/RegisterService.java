@@ -1,12 +1,12 @@
-package com.springboot.App.DataAccessLayer.service;
+package DataAccessLayer.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.springboot.App.DataAccessLayer.interfaces.RegisterRepo;
-import com.springboot.App.DataAccessLayer.models.Register;
+import DataAccessLayer.interfaces.RegisterRepo;
+import DataAccessLayer.models.Register;
 
 @Service
 public class RegisterService {
