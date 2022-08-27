@@ -23,6 +23,7 @@ import com.springboot.App.DataAccessLayer.interfaces.DStudent;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
 import com.springboot.App.DataAccessLayer.models.Student;
+import com.springboot.App.DataAccessLayer.models.registerUserRequest;
 import com.springboot.App.DataAccessLayer.service.AdministratorService;
 import com.springboot.App.DataAccessLayer.service.RegisterService;
 import com.springboot.App.DataAccessLayer.service.StudentsService;
@@ -129,17 +130,34 @@ public class routeController {
                 id=student_id.get();
                 Student student = StudentService.getByID(Integer.parseInt(id));
                 return new ResponseEntity<DStudent>(new DStudent(Integer.toString(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email(),new ArrayList<String>(Arrays.asList("Random Courses","asdsadasd"))), HttpStatus.OK);
-            }
+            }// Add courses
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         }
     }
 
-   /*  @PostMapping("/api/student")
-    public void addStudent(@RequestBody Student student){
-        StudentService.save(student);
-    }*/
+    //get auto ID
+   @PostMapping("/api/student/create")
+    public Boolean addStudent(@RequestBody registerUserRequest student){
+
+        System.out.println(student);
+        // try {
+            if (student.registerStudentRequest.isPresent()) {
+            Student stud = new Student(20, student.registerStudentRequest.get().studentName, student.registerStudentRequest.get().studentAddress, student.registerStudentRequest.get().studentEmail, student.registerStudentRequest.get().studentPassword);
+            StudentService.save(stud);
+            return true;
+        }
+        else return false;
+        // else return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+        // } catch (Exception e) {
+        //     //TODO: handle exception
+        //     return new ResponseEntity<Object>(HttpStatus.NOT_ACCEPTABLE);
+        // }
+        
+        
+        
+    }
 
     // @PutMapping("/api/student/{student_id}")
     // public ResponseEntity<DStudent> updateStudentDetails(@RequestBody DStudent student, @PathVariable String student_id){

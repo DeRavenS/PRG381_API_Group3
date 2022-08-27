@@ -22,6 +22,7 @@ public class StudentsService {
     }
 
     public void save(Student students){
+        //get auto id
         repo.save(students);
     }
 
