@@ -25,7 +25,7 @@ public class RegisterService {
         repo.save(register);
     }
 
-    public Register1 get(String id){
+    public Register1 get(Integer id){
         return repo.findById(id).get();
     }
 
@@ -43,7 +43,11 @@ public class RegisterService {
         }
     }
 
-    public void delete(String register_id){
+    public void delete(Integer register_id){
         repo.deleteById(register_id);
+    }
+
+    public void deleteByStudentID(Integer student_id){
+        repo.deleteByStudentId(student_id,student_id);
     }
 }

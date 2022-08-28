@@ -51,22 +51,46 @@ public class routeController {
      * Routes to INSERT/UPDATE/DELETE/SELECT the Administartor table in MySQL
      */
 
-    @GetMapping("/api/admin")
-    public ResponseEntity<DAdmin> getAdminDetails(@PathVariable("admin_id") Integer adminID){
+    @GetMapping("/api/admin{adminID}")
+    public ResponseEntity<DAdmin> getAdminDetails(@PathVariable("adminID") Optional<Integer> adminID) throws InterruptedException{
         try {
-            Administrator admin = AdminService.get(adminID);
-            System.out.println(admin.getAdminContact());
-            DAdmin dadmin = new DAdmin(String.valueOf(admin.getAdminID()), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
-            return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
+            String id;
+            if (adminID.isPresent()) {
+                id=String.valueOf(adminID.get());
+                Administrator admin = AdminService.get(Integer.parseInt(id));
+                DAdmin dadmin = new DAdmin(String.valueOf(admin.getAdminID()), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
+                return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
+            }
+            //else return new ResponseEntity<DAdmin>(HttpStatus.BAD_REQUEST);
+            else {
+                id="1";
+                Administrator admin = AdminService.get(Integer.parseInt(id));
+                DAdmin dadmin = new DAdmin(String.valueOf(admin.getAdminID()), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
+                return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
+            }
+            
+            
         } catch (NoSuchElementException e) {
             return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
         }
     }
+    @PostMapping("/api/admin/create")
+    public Boolean addAdmin(@RequestBody registerUserRequest admin){
+        if (admin.registerAdminRequest.isPresent()) {
+            Administrator ad = new Administrator(20, admin.registerAdminRequest.get().adminName, admin.registerAdminRequest.get().adminContact, admin.registerAdminRequest.get().adminEmail, admin.registerAdminRequest.get().adminPassword);
+            AdminService.save(ad);
+            return true;
+        }
+        else return false;
+    }
 
     @PutMapping("/api/admin")
-    public ResponseEntity<DAdmin> updateAdminDetails(@RequestBody DAdmin request, @PathVariable String admin_id){
+    public ResponseEntity<DAdmin> updateAdminDetails(@RequestBody DAdmin request){
         try {
-            Administrator admin = AdminService.get(Integer.parseInt(admin_id));
+            if (request==null) {
+                return new ResponseEntity<DAdmin>(HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+            Administrator admin = AdminService.get(Integer.parseInt(request.getAdminID()));
             if (!(request.getAdminID().isEmpty())) {
                 admin.setAdminID(Integer.parseInt(request.getAdminID()));
             }
@@ -87,15 +111,15 @@ public class routeController {
         }
     }
 
-    @DeleteMapping("/api/admin/{admin_id}")
-    public ResponseEntity<Administrator> deleteAdmin(@PathVariable Integer admin_id){
-        try {
-            AdminService.delete(admin_id);
-            return new ResponseEntity<Administrator>(HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<Administrator>(HttpStatus.NOT_FOUND);
-        }
-    }
+    // @DeleteMapping("/api/admin")
+    // public ResponseEntity<Administrator> deleteAdmin(@PathVariable String adminID){
+    //     try {
+    //         AdminService.delete(Integer.parseInt(adminID));
+    //         return new ResponseEntity<Administrator>(HttpStatus.OK);
+    //     } catch (NoSuchElementException e) {
+    //         return new ResponseEntity<Administrator>(HttpStatus.NOT_FOUND);
+    //     }
+    // }
 
     /*
      * Routes to INSERT/UPDATE/DELETE/SELECT the Student table in MySQL
@@ -114,8 +138,6 @@ public class routeController {
         response.itemsPerPage=size;
         response.page=page;
         response.pageCount=(int) Math.ceil(response.totalItems/response.itemsPerPage);
-        System.out.println(response.totalItems);
-        System.out.println(response.pageCount);
         return response;
     }
 
@@ -126,8 +148,8 @@ public class routeController {
             if (student_id.isPresent()) {
                 id=student_id.get();
                 Student student = StudentService.getByID(id);
-                List<String> reg = RegisterService.getStudentCourse(String.valueOf(student.getStudent_id()));
-                return new ResponseEntity<DStudent>(new DStudent(String.valueOf(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email(),reg), HttpStatus.OK);
+                List<String> courses = RegisterService.getStudentCourse(String.valueOf(student.getStudent_id()));
+                return new ResponseEntity<DStudent>(new DStudent(String.valueOf(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email(),courses), HttpStatus.OK);
             }
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         } catch (NoSuchElementException e) {
@@ -138,7 +160,6 @@ public class routeController {
     //get auto ID
    @PostMapping("/api/student/create")
     public Boolean addStudent(@RequestBody registerUserRequest student){
-        System.out.println(student);
         if (student.registerStudentRequest.isPresent()) {
             Student stud = new Student(20, student.registerStudentRequest.get().studentName, student.registerStudentRequest.get().studentAddress, student.registerStudentRequest.get().studentEmail, student.registerStudentRequest.get().studentPassword);
             StudentService.save(stud);
@@ -171,13 +192,10 @@ public class routeController {
                     }
                 }
                 for (String course : currentCourses) {
-                    System.out.println(course);
                     if (!request.getCourses().contains(course)) {
                         deleteCourses.add(course);
                     }
                 }
-                System.out.println(addCourses.size());
-                System.out.println(deleteCourses.size());
                 if (deleteCourses.size() != 0) {
                     RegisterService.deleteCourses(deleteCourses,request.getStudentID());
                 }
@@ -192,9 +210,12 @@ public class routeController {
         }
     }
 
-    @DeleteMapping("/api/student")
-    public ResponseEntity<DStudent> deleteStudent(@RequestBody DeleteRequest request){
-        try {
+    @DeleteMapping("/api/student/delete")
+    public ResponseEntity<DStudent> deleteStudent(@RequestBody DeleteRequest request) throws InterruptedException{
+        System.out.println(request.getID());
+        try {   
+            RegisterService.deleteByStudentID(Integer.parseInt(request.getID()));
+            Thread.sleep(1000);
             StudentService.delete(Integer.parseInt(request.getID()));
             return new ResponseEntity<DStudent>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -241,10 +262,6 @@ public class routeController {
 
     @PutMapping("/api/password")
     public ResponseEntity<PasswordResponse> resetPassword(@RequestBody PasswordRequest request) {
-        System.out.println("Here");
-        System.out.println(request.getEmail());
-        System.out.println(request.getOldPassword());
-        System.out.println(request.getNewPassword());
 
         Administrator admin = AdminService.findByEmail(request.getEmail());
         PasswordResponse response = new PasswordResponse();
@@ -267,10 +284,9 @@ public class routeController {
         Student student = StudentService.getByEmail(request.getEmail());
         
         if (student!=null&&(!student.getStudent_email().isEmpty())) {
-            System.out.println("Student");
+
             if (student.getStudent_password().equals(request.getOldPassword())) {
                 if (!student.getStudent_password().equals(request.getNewPassword())) {
-                    System.out.println(student.getStudent_password());
                     student.setStudent_password(request.getNewPassword());
                     StudentService.save(student);
 

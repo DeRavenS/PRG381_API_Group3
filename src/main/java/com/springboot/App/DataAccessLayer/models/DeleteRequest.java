@@ -1,13 +1,13 @@
 package com.springboot.App.DataAccessLayer.models;
 
 public class DeleteRequest {
-    String ID;
+    String id;
 
     public String getID() {
-        return ID;
+        return id;
     }
 
     public void setID(String iD) {
-        ID = iD;
+        id = iD;
     }
 }

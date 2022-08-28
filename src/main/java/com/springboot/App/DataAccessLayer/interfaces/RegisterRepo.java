@@ -11,7 +11,7 @@ import com.springboot.App.DataAccessLayer.models.Register1;
 import java.util.List;
 
 @Repository
-public interface RegisterRepo extends JpaRepository<Register1, String>{
+public interface RegisterRepo extends JpaRepository<Register1, Integer>{
     @Query(value = "SELECT r.course_name FROM register r WHERE r.student_id = ?1",nativeQuery = true)
     public List<String> findByStudentID(@Param("id") String id);
 
@@ -22,4 +22,8 @@ public interface RegisterRepo extends JpaRepository<Register1, String>{
     @Modifying
     @Query(value = "INSERT INTO register (student_id, course_name) VALUES (?2,?1)" ,nativeQuery = true)
     public void updateCourses(@Param("course_name") String course, @Param("student_id") String id);
+
+    @Modifying
+    @Query(value = "DELETE FROM register WHERE student_id=?1",nativeQuery = true)
+    public void deleteByStudentId(@Param("student_id") Integer student_id,Integer studID);
 }
