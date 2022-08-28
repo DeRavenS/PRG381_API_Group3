@@ -171,12 +171,15 @@ public class routeController {
                     }
                 }
                 for (String course : currentCourses) {
-                    if (request.getCourses().contains(course)) {
+                    System.out.println(course);
+                    if (!request.getCourses().contains(course)) {
                         deleteCourses.add(course);
                     }
                 }
+                System.out.println(addCourses.size());
+                System.out.println(deleteCourses.size());
                 if (deleteCourses.size() != 0) {
-                    RegisterService.deleteCourses(deleteCourses);
+                    RegisterService.deleteCourses(deleteCourses,request.getStudentID());
                 }
                 if (addCourses.size() != 0) {
                     RegisterService.updateCourses(addCourses, request.getStudentID());
@@ -238,10 +241,15 @@ public class routeController {
 
     @PutMapping("/api/password")
     public ResponseEntity<PasswordResponse> resetPassword(@RequestBody PasswordRequest request) {
+        System.out.println("Here");
+        System.out.println(request.getEmail());
+        System.out.println(request.getOldPassword());
+        System.out.println(request.getNewPassword());
+
         Administrator admin = AdminService.findByEmail(request.getEmail());
         PasswordResponse response = new PasswordResponse();
 
-        if (!(admin.getAdminEmail().isEmpty())) {
+        if (admin!=null&&(!admin.getAdminEmail().isEmpty())) {
             if (admin.getAdmin_password().equals(request.getOldPassword())) {
                 if (!admin.getAdmin_password().equals(request.getNewPassword())) {
                     admin.setAdmin_password(request.getNewPassword());
@@ -258,9 +266,11 @@ public class routeController {
 
         Student student = StudentService.getByEmail(request.getEmail());
         
-        if (!(student.getStudent_email().isEmpty())) {
+        if (student!=null&&(!student.getStudent_email().isEmpty())) {
+            System.out.println("Student");
             if (student.getStudent_password().equals(request.getOldPassword())) {
                 if (!student.getStudent_password().equals(request.getNewPassword())) {
+                    System.out.println(student.getStudent_password());
                     student.setStudent_password(request.getNewPassword());
                     StudentService.save(student);
 

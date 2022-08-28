@@ -33,17 +33,14 @@ public class RegisterService {
         return repo.findByStudentID(id);
     }
 
-    public void deleteCourses(List<String> name){
-        repo.deleteCourses(name);
+    public void deleteCourses(List<String> name,String id){
+        repo.deleteCourses(name,id);
     }
 
     public void updateCourses(List<String> name, String id){
-        String query = "";
         for (String course : name) {
-            query += ",(" + id + ", " + course + ")";
+            repo.updateCourses(course,id);
         }
-        query = query.substring(1, query.length() - 1);
-        repo.updateCourses(query);
     }
 
     public void delete(String register_id){
