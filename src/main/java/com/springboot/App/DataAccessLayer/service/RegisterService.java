@@ -25,11 +25,28 @@ public class RegisterService {
         repo.save(register);
     }
 
-    public Register1 get(Integer register_id){
-        return repo.findById(register_id).get();
+    public Register1 get(String id){
+        return repo.findById(id).get();
     }
 
-    public void delete(Integer register_id){
+    public List<String> getStudentCourse(String id){
+        return repo.findByStudentID(id);
+    }
+
+    public void deleteCourses(List<String> name){
+        repo.deleteCourses(name);
+    }
+
+    public void updateCourses(List<String> name, String id){
+        String query = "";
+        for (String course : name) {
+            query += ",(" + id + ", " + course + ")";
+        }
+        query = query.substring(1, query.length() - 1);
+        repo.updateCourses(query);
+    }
+
+    public void delete(String register_id){
         repo.deleteById(register_id);
     }
 }
