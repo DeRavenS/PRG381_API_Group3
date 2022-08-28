@@ -1,8 +1,7 @@
  package com.springboot.App.DataAccessLayer.routeController;
 
-// import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
 import com.springboot.App.DataAccessLayer.interfaces.DStudent;
 import com.springboot.App.DataAccessLayer.interfaces.LoginResponse;
 import com.springboot.App.DataAccessLayer.interfaces.PasswordResponse;
-// import com.springboot.App.DataAccessLayer.models.Admin;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
 import com.springboot.App.DataAccessLayer.models.DeleteRequest;
@@ -33,33 +31,8 @@ import com.springboot.App.DataAccessLayer.models.PasswordRequest;
 import com.springboot.App.DataAccessLayer.models.Student;
 import com.springboot.App.DataAccessLayer.models.registerUserRequest;
 import com.springboot.App.DataAccessLayer.service.AdministratorService;
-// import com.springboot.App.DataAccessLayer.service.DAdministratorService;
-// import com.springboot.App.DataAccessLayer.service.DStudentsService;
-// import com.springboot.App.DataAccessLayer.service.RegisterService;
+import com.springboot.App.DataAccessLayer.service.RegisterService;
 import com.springboot.App.DataAccessLayer.service.StudentsService;
-
-// import java.util.List;
-// import java.util.NoSuchElementException;
-
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
-
-// // import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
-// import com.springboot.App.DataAccessLayer.interfaces.DStudent;
-// import com.springboot.App.DataAccessLayer.models.Administrator;
-// import com.springboot.App.DataAccessLayer.models.Register;
-// import com.springboot.App.DataAccessLayer.service.AdministratorService;
-// import com.springboot.App.DataAccessLayer.service.RegisterService;
-// import com.springboot.App.DataAccessLayer.service.StudentsService;
 
 @RestController
 @RequestMapping
@@ -71,8 +44,8 @@ public class routeController {
     @Autowired
     private StudentsService StudentService;
 
-    /* @Autowired
-    private RegisterService RegisterService; */
+    @Autowired
+    private RegisterService RegisterService;
 
     /*
      * Routes to INSERT/UPDATE/DELETE/SELECT the Administartor table in MySQL
@@ -153,8 +126,9 @@ public class routeController {
             if (student_id.isPresent()) {
                 id=student_id.get();
                 Student student = StudentService.getByID(id);
-                return new ResponseEntity<DStudent>(new DStudent(String.valueOf(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email(),new ArrayList<String>(Arrays.asList("Random Courses","asdsadasd"))), HttpStatus.OK);
-            }// Add courses
+                List<String> reg = RegisterService.getStudentCourse(String.valueOf(student.getStudent_id()));
+                return new ResponseEntity<DStudent>(new DStudent(String.valueOf(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email(),reg), HttpStatus.OK);
+            }
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
@@ -185,7 +159,28 @@ public class routeController {
             }
             if (!(request.getStudentEmail().isEmpty())) {
                 student.setStudent_email(request.getStudentEmail());
+            }
+            if (!(request.getCourses().isEmpty())) {
+                List<String> currentCourses = RegisterService.getStudentCourse(request.getStudentID());
+                List<String> deleteCourses = new ArrayList<>();
+                List<String> addCourses = new ArrayList<>();
 
+                for (String course : request.getCourses()) {
+                    if (!currentCourses.contains(course)) {
+                        addCourses.add(course);
+                    }
+                }
+                for (String course : currentCourses) {
+                    if (request.getCourses().contains(course)) {
+                        deleteCourses.add(course);
+                    }
+                }
+                if (deleteCourses.size() != 0) {
+                    RegisterService.deleteCourses(deleteCourses);
+                }
+                if (addCourses.size() != 0) {
+                    RegisterService.updateCourses(addCourses, request.getStudentID());
+                }
             }
             StudentService.save(student);
             return new ResponseEntity<DStudent>(request, HttpStatus.OK);
