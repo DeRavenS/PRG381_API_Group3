@@ -9,6 +9,6 @@ import com.springboot.App.DataAccessLayer.models.Administrator;
 
 @Repository
 public interface AdministratorRepo extends JpaRepository<Administrator, Integer>{
-    @Query(value = "SELECT s.* FROM student s WHERE s.student_email = ?1",nativeQuery = true)
+    @Query(value = "SELECT a.* FROM administrator a WHERE a.admin_email = ?1",nativeQuery = true)
     public Administrator getAdminByEmail(@Param("email") String email);
 }

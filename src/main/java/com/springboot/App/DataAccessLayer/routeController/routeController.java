@@ -208,12 +208,12 @@ public class routeController {
      * Login routes
      */
 
-    @GetMapping("/api/login")
+    @PostMapping("/api/login")
     public ResponseEntity<LoginResponse> getStudents(@RequestBody LoginRequest request) {
         Administrator admin = AdminService.findByEmail(request.getEmail());
         LoginResponse response = new LoginResponse();
 
-        if (!(admin.getAdminEmail().isEmpty())) {
+        if (admin!=null&&!(admin.getAdminEmail().isEmpty())) {
             if (admin.getAdmin_password().equals(request.getPassword())) {
                 response.setAdmin(true);
                 response.setID(String.valueOf(admin.getAdminID()));
@@ -225,7 +225,7 @@ public class routeController {
 
         Student student = StudentService.getByEmail(request.getEmail());
         
-        if (!(student.getStudent_email().isEmpty())) {
+        if (student!=null&&!(student.getStudent_email().isEmpty())) {
             if (student.getStudent_password().equals(request.getPassword())) {
                 response.setAdmin(false);
                 response.setID(String.valueOf(student.getStudent_id()));
