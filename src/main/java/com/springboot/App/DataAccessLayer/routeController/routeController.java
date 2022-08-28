@@ -23,11 +23,13 @@ import com.springboot.App.DataAccessLayer.interfaces.BrowseStudentRequest;
 import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
 import com.springboot.App.DataAccessLayer.interfaces.DStudent;
 import com.springboot.App.DataAccessLayer.interfaces.LoginResponse;
+import com.springboot.App.DataAccessLayer.interfaces.PasswordResponse;
 // import com.springboot.App.DataAccessLayer.models.Admin;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
 import com.springboot.App.DataAccessLayer.models.DeleteRequest;
 import com.springboot.App.DataAccessLayer.models.LoginRequest;
+import com.springboot.App.DataAccessLayer.models.PasswordRequest;
 import com.springboot.App.DataAccessLayer.models.Student;
 import com.springboot.App.DataAccessLayer.models.registerUserRequest;
 import com.springboot.App.DataAccessLayer.service.AdministratorService;
@@ -212,7 +214,7 @@ public class routeController {
         if (!(admin.getAdminEmail().isEmpty())) {
             if (admin.getAdmin_password().equals(request.getPassword())) {
                 response.setAdmin(true);
-                response.setEmail(request.getEmail());
+                response.setID(String.valueOf(admin.getAdminID()));
                 return new ResponseEntity<LoginResponse>(response, HttpStatus.ACCEPTED);
             } else {
                 return new ResponseEntity<LoginResponse>(HttpStatus.UNAUTHORIZED);
@@ -224,13 +226,57 @@ public class routeController {
         if (!(student.getStudent_email().isEmpty())) {
             if (student.getStudent_password().equals(request.getPassword())) {
                 response.setAdmin(false);
-                response.setEmail(request.getEmail());
+                response.setID(String.valueOf(student.getStudent_id()));
                 return new ResponseEntity<LoginResponse>(response, HttpStatus.ACCEPTED);
             } else {
                 return new ResponseEntity<LoginResponse>(HttpStatus.UNAUTHORIZED);
             }
         }
         return new ResponseEntity<LoginResponse>(HttpStatus.NOT_FOUND);
+    }
+
+    /* 
+     * Reset Password routes
+     */
+
+    @PutMapping("/api/password")
+    public ResponseEntity<PasswordResponse> resetPassword(@RequestBody PasswordRequest request) {
+        Administrator admin = AdminService.findByEmail(request.getEmail());
+        PasswordResponse response = new PasswordResponse();
+
+        if (!(admin.getAdminEmail().isEmpty())) {
+            if (admin.getAdmin_password().equals(request.getOldPassword())) {
+                if (!admin.getAdmin_password().equals(request.getNewPassword())) {
+                    admin.setAdmin_password(request.getNewPassword());
+                    AdminService.save(admin);
+                    
+                    response.setChanged(true);
+                    return new ResponseEntity<PasswordResponse>(response, HttpStatus.OK);
+                } else {
+                    response.setChanged(false);
+                    return new ResponseEntity<PasswordResponse>(response, HttpStatus.UNAUTHORIZED);
+                }
+            }
+        }
+
+        Student student = StudentService.getByEmail(request.getEmail());
+        
+        if (!(student.getStudent_email().isEmpty())) {
+            if (student.getStudent_password().equals(request.getOldPassword())) {
+                if (!student.getStudent_password().equals(request.getNewPassword())) {
+                    student.setStudent_password(request.getNewPassword());
+                    StudentService.save(student);
+
+                    response.setChanged(true);
+                    return new ResponseEntity<PasswordResponse>(response, HttpStatus.ACCEPTED);
+                } else {
+                    response.setChanged(false);
+                    return new ResponseEntity<PasswordResponse>(response, HttpStatus.UNAUTHORIZED);
+                }
+            }
+        }
+        response.setChanged(false);
+        return new ResponseEntity<PasswordResponse>(response, HttpStatus.NOT_FOUND);
     }
 
     /*

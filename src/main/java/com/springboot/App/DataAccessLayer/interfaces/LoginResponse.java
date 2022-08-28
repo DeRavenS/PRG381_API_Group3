@@ -2,7 +2,7 @@ package com.springboot.App.DataAccessLayer.interfaces;
 
 public class LoginResponse {
     Boolean admin;
-    String email;
+    String ID;
     
     public Boolean getAdmin() {
         return admin;
@@ -10,11 +10,11 @@ public class LoginResponse {
     public void setAdmin(Boolean admin) {
         this.admin = admin;
     }
-    public String getEmail() {
-        return email;
+    public String getID() {
+        return ID;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setID(String email) {
+        this.ID = email;
     }
     
 }
