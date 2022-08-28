@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.springboot.App.DataAccessLayer.models.Administrator;
 
+// import com.springboot.App.DataAccessLayer.models.Administrator;
+
 @Repository
 public interface AdministratorRepo extends JpaRepository<Administrator, Integer>{
     

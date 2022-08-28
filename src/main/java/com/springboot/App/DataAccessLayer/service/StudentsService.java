@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+// import com.springboot.App.DataAccessLayer.interfaces.DStudent;
 import com.springboot.App.DataAccessLayer.interfaces.StudentsRepo;
 import com.springboot.App.DataAccessLayer.models.Student;
 
@@ -26,8 +27,8 @@ public class StudentsService {
         repo.save(students);
     }
 
-    public Student getByID(int student_id){
-        return repo.getReferenceById(student_id);
+    public Student getByID(String id){
+        return repo.getReferenceById(Integer.parseInt(id));
     }
 
     public Student getByEmail(String stud_email)
@@ -35,7 +36,7 @@ public class StudentsService {
         return repo.getStudentByEmail(stud_email);
     }
 
-    public void delete(int student_id){
+    public void delete(Integer student_id){
         repo.deleteById(student_id);
     }
 }

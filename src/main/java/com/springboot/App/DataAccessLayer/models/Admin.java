@@ -27,8 +27,6 @@ public class Admin {
     @Column(name="admin_email")
     private String adminEmail;
 
-    
-
     public Admin(int adminID, String adminName, String admin_password, String adminContact, String adminEmail) {
         this.adminID = adminID;
         this.adminName = adminName;

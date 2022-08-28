@@ -8,41 +8,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-import com.springboot.App.DataAccessLayer.interfaces.AdministratorRepo;
-// import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
+// import com.springboot.App.DataAccessLayer.interfaces.AdministratorRepo;
+import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
 // import com.springboot.App.DataAccessLayer.models.Admin;
 // import com.springboot.App.DataAccessLayer.models.Admin;
 // import com.springboot.App.DataAccessLayer.models.Administrator;
-import com.springboot.App.DataAccessLayer.models.Administrator;
+import com.springboot.App.DataAccessLayer.interfaces.DAdministratorRepo;
 
 @Service
 @Transactional
-public class AdministratorService {
+public class DAdministratorService {
 
     @Autowired
-    AdministratorRepo aRepo;
+    DAdministratorRepo aRepo;
 
-    public List<Administrator> getAll()
+    public List<DAdmin> getAll()
     {
-        
         return aRepo.findAll();
     }
 
   
 
-    public List<Administrator> listAll(){
+    public List<DAdmin> listAll(){
         return aRepo.findAll();
     }
 
-    public void save(Administrator administrator){
+    public void save(DAdmin administrator){
         aRepo.save(administrator);
     }
 
-    public Administrator get(Integer ID){
-        return aRepo.findById(ID).get();
+    public DAdmin get(String adminID){
+        return aRepo.findById(adminID).get();
     }
 
-    public void delete(Integer admin_id){
+    public void delete(String admin_id){
         aRepo.deleteById(admin_id);
     }
 }

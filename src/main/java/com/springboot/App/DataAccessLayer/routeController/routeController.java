@@ -1,6 +1,6 @@
  package com.springboot.App.DataAccessLayer.routeController;
 
-import java.lang.reflect.Array;
+// import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -13,19 +13,24 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.App.DataAccessLayer.interfaces.BrowseStudentRequest;
+import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
 import com.springboot.App.DataAccessLayer.interfaces.DStudent;
+// import com.springboot.App.DataAccessLayer.models.Admin;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
 import com.springboot.App.DataAccessLayer.models.Student;
 import com.springboot.App.DataAccessLayer.models.registerUserRequest;
 import com.springboot.App.DataAccessLayer.service.AdministratorService;
-import com.springboot.App.DataAccessLayer.service.RegisterService;
+import com.springboot.App.DataAccessLayer.service.DAdministratorService;
+import com.springboot.App.DataAccessLayer.service.DStudentsService;
+// import com.springboot.App.DataAccessLayer.service.RegisterService;
 import com.springboot.App.DataAccessLayer.service.StudentsService;
 
 // import java.util.List;
@@ -57,40 +62,45 @@ public class routeController {
    
     @Autowired
     private AdministratorService AdminService;
+    
+    @Autowired
+    private DAdministratorService DAdminService;
 
     @Autowired
     private StudentsService StudentService;
 
     @Autowired
-    private RegisterService RegisterService;
+    private DStudentsService DStudentService;
+
+    /* @Autowired
+    private RegisterService RegisterService; */
 
     /*
      * Routes to INSERT/UPDATE/DELETE/SELECT the Administartor table in MySQL
      */
 
     @GetMapping("/api/admin/{admin_id}")
-    public ResponseEntity<Administrator> getAdminDetails(@PathVariable("admin_id") Integer adminID){
+    public ResponseEntity<DAdmin> getAdminDetails(@PathVariable("admin_id") Integer adminID){
         try {
             Administrator admin = AdminService.get(adminID);
             System.out.println(admin.getAdminContact());
-            Administrator dadmin = new Administrator(admin.getAdminID(), admin.getAdminName(), admin.getAdmin_password(), admin.getAdminContact(), admin.getAdminEmail());
-            return new ResponseEntity<Administrator>(dadmin, HttpStatus.OK);
+            DAdmin dadmin = new DAdmin(String.valueOf(admin.getAdminID()), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
+            return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Administrator>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
         }
     }
 
-    // @PutMapping("/api/admin/{admin_id}")
-    // public ResponseEntity<DAdmin> updateAdminDetails(@RequestBody DAdmin admin, @PathVariable Integer admin_id){
-    //     try {
-    //         DAdmin existAdmin = AdminService.get(admin_id);
-    //         DAdmin dadmin = new DAdmin(admin.getAdminID(), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
-    //         AdminService.save(admin);
-    //         return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
-    //     } catch (NoSuchElementException e) {
-    //         return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
-    //     }
-    // }
+    @PutMapping("/api/admin")
+    public ResponseEntity<DAdmin> updateAdminDetails(@RequestBody DAdmin admin, @PathVariable String admin_id){
+        try {
+            DAdmin dadmin = new DAdmin(admin.getAdminID(), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
+            DAdminService.save(admin);
+            return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     @DeleteMapping("/api/admin/{admin_id}")
     public ResponseEntity<Administrator> deleteAdmin(@PathVariable Integer admin_id){
@@ -112,8 +122,8 @@ public class routeController {
         //Add pagination from request
         Integer size = request.size;
         Integer page = request.page;
-        for (Student student  : StudentService.listAll()) {
-            response.items.add(new BrowsedStudent(Integer.toString(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email()));
+        for (DStudent student  : DStudentService.listAll()) {
+            response.items.add(new BrowsedStudent(student.getStudentID(), student.getStudentName() , student.getStudentAddress(), student.getStudentEmail()));
         }
         response.totalItems=response.items.size();
         response.itemsPerPage=size;
@@ -128,8 +138,8 @@ public class routeController {
             String id;
             if (student_id.isPresent()) {
                 id=student_id.get();
-                Student student = StudentService.getByID(Integer.parseInt(id));
-                return new ResponseEntity<DStudent>(new DStudent(Integer.toString(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email(),new ArrayList<String>(Arrays.asList("Random Courses","asdsadasd"))), HttpStatus.OK);
+                DStudent student = DStudentService.getByID(id);
+                return new ResponseEntity<DStudent>(new DStudent(student.getStudentID(), student.getStudentName() , student.getStudentAddress(), student.getStudentEmail(),new ArrayList<String>(Arrays.asList("Random Courses","asdsadasd"))), HttpStatus.OK);
             }// Add courses
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         } catch (NoSuchElementException e) {
@@ -140,45 +150,50 @@ public class routeController {
     //get auto ID
    @PostMapping("/api/student/create")
     public Boolean addStudent(@RequestBody registerUserRequest student){
-
         System.out.println(student);
-        // try {
-            if (student.registerStudentRequest.isPresent()) {
+        if (student.registerStudentRequest.isPresent()) {
             Student stud = new Student(20, student.registerStudentRequest.get().studentName, student.registerStudentRequest.get().studentAddress, student.registerStudentRequest.get().studentEmail, student.registerStudentRequest.get().studentPassword);
             StudentService.save(stud);
             return true;
         }
         else return false;
-        // else return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-        // } catch (Exception e) {
-        //     //TODO: handle exception
-        //     return new ResponseEntity<Object>(HttpStatus.NOT_ACCEPTABLE);
-        // }
-        
-        
-        
     }
 
-    // @PutMapping("/api/student/{student_id}")
-    // public ResponseEntity<DStudent> updateStudentDetails(@RequestBody DStudent student, @PathVariable String student_id){
-    //     try {
-    //         DStudent existStudent = StudentService.get(student_id);
-    //         StudentService.save(student);
-    //         return new ResponseEntity<DStudent>(student, HttpStatus.OK);
-    //     } catch (NoSuchElementException e) {
-    //         return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
-    //     }
-    // }
+    @PutMapping("/api/student/{student_id}")
+    public ResponseEntity<DStudent> updateStudentDetails(@RequestBody DStudent student){
+        try {
+            DStudentService.save(student);
+            return new ResponseEntity<DStudent>(student, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
+        }
+    }
 
-    // @DeleteMapping("/api/student/{student_id}")
-    // public ResponseEntity<DStudent> deleteStudent(@PathVariable String student_id){
-    //     try {
-    //         StudentService.delete(student_id);
-    //         return new ResponseEntity<DStudent>(HttpStatus.OK);
-    //     } catch (NoSuchElementException e) {
-    //         return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
-    //     }
-    // }
+    @DeleteMapping("/api/student/{student_id}")
+    public ResponseEntity<DStudent> deleteStudent(@PathVariable String student_id){
+        try {
+            DStudentService.delete(student_id);
+            return new ResponseEntity<DStudent>(HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /* 
+     * Login routes
+     */
+
+    @GetMapping("/api/login/{id}?{password}")
+    public Boolean getStudents(@PathVariable String ID, @PathVariable String pass) {
+        DAdmin dadmin = DAdminService.get(ID);
+        final Administrator admin = AdminService.get(Integer.parseInt(ID));
+        if (ID.equals(dadmin.getAdminID())) {
+            if (pass.equals(admin.getAdmin_password())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /*
      * Routes to INSERT/UPDATE/DELETE/SELECT the Register table in MySQL
