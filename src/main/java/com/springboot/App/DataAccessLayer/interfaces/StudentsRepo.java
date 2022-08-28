@@ -14,6 +14,6 @@ public interface StudentsRepo extends JpaRepository<Student, Integer>{
     @Query(value = "SELECT s.* FROM student s WHERE s.student_email = ?1",nativeQuery = true)
     public Student getStudentByEmail(@Param("email") String email);
 
-    @Query(value = "SELECT s.* FROM student s LIMIT ?1 OFFSET ?2",nativeQuery = true)
+    @Query(value = "SELECT s.* FROM student s LIMIT ?2 OFFSET ?1",nativeQuery = true)
     public List<Student> findAllPage(@Param("page") Integer page, @Param("size")Integer size);
 }

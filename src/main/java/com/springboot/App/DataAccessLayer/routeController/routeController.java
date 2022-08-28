@@ -135,10 +135,12 @@ public class routeController {
         for (Student student  : StudentService.listAll(page, size)) {
             response.items.add(new BrowsedStudent(String.valueOf(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email()));
         }
-        response.totalItems=response.items.size();
+        response.totalItems=StudentService.totalCount();
         response.itemsPerPage=size;
         response.page=page;
         response.pageCount=(int) Math.ceil(response.totalItems/response.itemsPerPage);
+        System.out.println(response.totalItems);
+        System.out.println(response.pageCount);
         return response;
     }
 

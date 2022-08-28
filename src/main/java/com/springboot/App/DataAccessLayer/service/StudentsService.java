@@ -19,7 +19,7 @@ public class StudentsService {
     private StudentsRepo repo;
 
     public List<Student> listAll(Integer page, Integer size){
-        return repo.findAllPage(page, size);
+        return repo.findAllPage((page-1)*size, size);
     }
 
     public void save(Student students){
@@ -37,5 +37,9 @@ public class StudentsService {
 
     public void delete(Integer student_id){
         repo.deleteById(student_id);
+    }
+
+    public long totalCount(){
+        return repo.count();
     }
 }
