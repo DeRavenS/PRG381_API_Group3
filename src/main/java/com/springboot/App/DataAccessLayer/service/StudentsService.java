@@ -18,8 +18,8 @@ public class StudentsService {
     @Autowired
     private StudentsRepo repo;
 
-    public List<Student> listAll(){
-        return repo.findAll();
+    public List<Student> listAll(Integer page, Integer size){
+        return repo.findAllPage(page, size);
     }
 
     public void save(Student students){
@@ -31,8 +31,7 @@ public class StudentsService {
         return repo.getReferenceById(Integer.parseInt(id));
     }
 
-    public Student getByEmail(String stud_email)
-    {
+    public Student getByEmail(String stud_email){
         return repo.getStudentByEmail(stud_email);
     }
 

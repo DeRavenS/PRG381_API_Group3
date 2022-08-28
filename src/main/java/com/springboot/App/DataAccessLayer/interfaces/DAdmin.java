@@ -1,10 +1,14 @@
 package com.springboot.App.DataAccessLayer.interfaces;
 
+
 public class DAdmin {
-    String adminID;
-    String adminName;
-    String adminContact;
-    String adminEmail;
+    private String adminID;
+
+    private String adminName;
+
+    private String adminContact;
+
+    private String adminEmail;
 
    
 

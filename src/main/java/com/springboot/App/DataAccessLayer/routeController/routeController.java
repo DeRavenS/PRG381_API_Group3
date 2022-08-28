@@ -22,14 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.App.DataAccessLayer.interfaces.BrowseStudentRequest;
 import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
 import com.springboot.App.DataAccessLayer.interfaces.DStudent;
+import com.springboot.App.DataAccessLayer.interfaces.LoginResponse;
 // import com.springboot.App.DataAccessLayer.models.Admin;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.BrowsedStudent;
+import com.springboot.App.DataAccessLayer.models.DeleteRequest;
+import com.springboot.App.DataAccessLayer.models.LoginRequest;
 import com.springboot.App.DataAccessLayer.models.Student;
 import com.springboot.App.DataAccessLayer.models.registerUserRequest;
 import com.springboot.App.DataAccessLayer.service.AdministratorService;
-import com.springboot.App.DataAccessLayer.service.DAdministratorService;
-import com.springboot.App.DataAccessLayer.service.DStudentsService;
+// import com.springboot.App.DataAccessLayer.service.DAdministratorService;
+// import com.springboot.App.DataAccessLayer.service.DStudentsService;
 // import com.springboot.App.DataAccessLayer.service.RegisterService;
 import com.springboot.App.DataAccessLayer.service.StudentsService;
 
@@ -62,15 +65,9 @@ public class routeController {
    
     @Autowired
     private AdministratorService AdminService;
-    
-    @Autowired
-    private DAdministratorService DAdminService;
 
     @Autowired
     private StudentsService StudentService;
-
-    @Autowired
-    private DStudentsService DStudentService;
 
     /* @Autowired
     private RegisterService RegisterService; */
@@ -79,7 +76,7 @@ public class routeController {
      * Routes to INSERT/UPDATE/DELETE/SELECT the Administartor table in MySQL
      */
 
-    @GetMapping("/api/admin/{admin_id}")
+    @GetMapping("/api/admin")
     public ResponseEntity<DAdmin> getAdminDetails(@PathVariable("admin_id") Integer adminID){
         try {
             Administrator admin = AdminService.get(adminID);
@@ -92,11 +89,24 @@ public class routeController {
     }
 
     @PutMapping("/api/admin")
-    public ResponseEntity<DAdmin> updateAdminDetails(@RequestBody DAdmin admin, @PathVariable String admin_id){
+    public ResponseEntity<DAdmin> updateAdminDetails(@RequestBody DAdmin request, @PathVariable String admin_id){
         try {
-            DAdmin dadmin = new DAdmin(admin.getAdminID(), admin.getAdminName(), admin.getAdminContact(), admin.getAdminEmail());
-            DAdminService.save(admin);
-            return new ResponseEntity<DAdmin>(dadmin, HttpStatus.OK);
+            Administrator admin = AdminService.get(Integer.parseInt(admin_id));
+            if (!(request.getAdminID().isEmpty())) {
+                admin.setAdminID(Integer.parseInt(request.getAdminID()));
+            }
+            if (!(request.getAdminName().isEmpty())) {
+                admin.setAdminName(request.getAdminName());
+            }
+            if (!(request.getAdminContact().isEmpty())) {
+                admin.setAdminContact(request.getAdminContact());
+            }
+            if (!(request.getAdminEmail().isEmpty())) {
+                admin.setAdminEmail(request.getAdminEmail());
+
+            }
+            AdminService.save(admin);
+            return new ResponseEntity<DAdmin>(request, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<DAdmin>(HttpStatus.NOT_FOUND);
         }
@@ -120,10 +130,10 @@ public class routeController {
     public pagedResponse<BrowsedStudent> listStudent(@RequestBody BrowseStudentRequest request){
         pagedResponse<BrowsedStudent> response = new pagedResponse<BrowsedStudent>(); 
         //Add pagination from request
-        Integer size = request.size;
         Integer page = request.page;
-        for (DStudent student  : DStudentService.listAll()) {
-            response.items.add(new BrowsedStudent(student.getStudentID(), student.getStudentName() , student.getStudentAddress(), student.getStudentEmail()));
+        Integer size = request.size;
+        for (Student student  : StudentService.listAll(page, size)) {
+            response.items.add(new BrowsedStudent(String.valueOf(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email()));
         }
         response.totalItems=response.items.size();
         response.itemsPerPage=size;
@@ -138,8 +148,8 @@ public class routeController {
             String id;
             if (student_id.isPresent()) {
                 id=student_id.get();
-                DStudent student = DStudentService.getByID(id);
-                return new ResponseEntity<DStudent>(new DStudent(student.getStudentID(), student.getStudentName() , student.getStudentAddress(), student.getStudentEmail(),new ArrayList<String>(Arrays.asList("Random Courses","asdsadasd"))), HttpStatus.OK);
+                Student student = StudentService.getByID(id);
+                return new ResponseEntity<DStudent>(new DStudent(String.valueOf(student.getStudent_id()), student.getStudent_name() , student.getStudent_address(), student.getStudent_email(),new ArrayList<String>(Arrays.asList("Random Courses","asdsadasd"))), HttpStatus.OK);
             }// Add courses
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         } catch (NoSuchElementException e) {
@@ -159,20 +169,31 @@ public class routeController {
         else return false;
     }
 
-    @PutMapping("/api/student/{student_id}")
-    public ResponseEntity<DStudent> updateStudentDetails(@RequestBody DStudent student){
+    @PutMapping("/api/student")
+    public ResponseEntity<DStudent> updateStudentDetails(@RequestBody DStudent request){
         try {
-            DStudentService.save(student);
-            return new ResponseEntity<DStudent>(student, HttpStatus.OK);
+            Student student = StudentService.getByID(request.getStudentID());
+            if (!(request.getStudentName().isEmpty())) {
+                student.setStudent_name(request.getStudentName());
+            }
+            if (!(request.getStudentAddress().isEmpty())) {
+                student.setStudent_address(request.getStudentAddress());
+            }
+            if (!(request.getStudentEmail().isEmpty())) {
+                student.setStudent_email(request.getStudentEmail());
+
+            }
+            StudentService.save(student);
+            return new ResponseEntity<DStudent>(request, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/api/student/{student_id}")
-    public ResponseEntity<DStudent> deleteStudent(@PathVariable String student_id){
+    @DeleteMapping("/api/student")
+    public ResponseEntity<DStudent> deleteStudent(@RequestBody DeleteRequest request){
         try {
-            DStudentService.delete(student_id);
+            StudentService.delete(Integer.parseInt(request.getID()));
             return new ResponseEntity<DStudent>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<DStudent>(HttpStatus.NOT_FOUND);
@@ -183,16 +204,33 @@ public class routeController {
      * Login routes
      */
 
-    @GetMapping("/api/login/{id}?{password}")
-    public Boolean getStudents(@PathVariable String ID, @PathVariable String pass) {
-        DAdmin dadmin = DAdminService.get(ID);
-        final Administrator admin = AdminService.get(Integer.parseInt(ID));
-        if (ID.equals(dadmin.getAdminID())) {
-            if (pass.equals(admin.getAdmin_password())) {
-                return true;
+    @GetMapping("/api/login")
+    public ResponseEntity<LoginResponse> getStudents(@RequestBody LoginRequest request) {
+        Administrator admin = AdminService.findByEmail(request.getEmail());
+        LoginResponse response = new LoginResponse();
+
+        if (!(admin.getAdminEmail().isEmpty())) {
+            if (admin.getAdmin_password().equals(request.getPassword())) {
+                response.setAdmin(true);
+                response.setEmail(request.getEmail());
+                return new ResponseEntity<LoginResponse>(response, HttpStatus.ACCEPTED);
+            } else {
+                return new ResponseEntity<LoginResponse>(HttpStatus.UNAUTHORIZED);
             }
         }
-        return false;
+
+        Student student = StudentService.getByEmail(request.getEmail());
+        
+        if (!(student.getStudent_email().isEmpty())) {
+            if (student.getStudent_password().equals(request.getPassword())) {
+                response.setAdmin(false);
+                response.setEmail(request.getEmail());
+                return new ResponseEntity<LoginResponse>(response, HttpStatus.ACCEPTED);
+            } else {
+                return new ResponseEntity<LoginResponse>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        return new ResponseEntity<LoginResponse>(HttpStatus.NOT_FOUND);
     }
 
     /*

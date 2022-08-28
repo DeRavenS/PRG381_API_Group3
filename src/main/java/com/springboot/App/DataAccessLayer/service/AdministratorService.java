@@ -9,10 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.App.DataAccessLayer.interfaces.AdministratorRepo;
-// import com.springboot.App.DataAccessLayer.interfaces.DAdmin;
-// import com.springboot.App.DataAccessLayer.models.Admin;
-// import com.springboot.App.DataAccessLayer.models.Admin;
-// import com.springboot.App.DataAccessLayer.models.Administrator;
 import com.springboot.App.DataAccessLayer.models.Administrator;
 
 @Service
@@ -24,11 +20,8 @@ public class AdministratorService {
 
     public List<Administrator> getAll()
     {
-        
         return aRepo.findAll();
     }
-
-  
 
     public List<Administrator> listAll(){
         return aRepo.findAll();
@@ -44,5 +37,9 @@ public class AdministratorService {
 
     public void delete(Integer admin_id){
         aRepo.deleteById(admin_id);
+    }
+
+    public Administrator findByEmail(String email) {
+        return aRepo.getAdminByEmail(email);
     }
 }

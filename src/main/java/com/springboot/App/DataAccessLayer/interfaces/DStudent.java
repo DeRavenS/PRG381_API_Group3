@@ -3,11 +3,16 @@ package com.springboot.App.DataAccessLayer.interfaces;
 import java.util.*;
 
 public class DStudent {
-    String studentID;
-    String studentName;
-    String studentAddress;
-    String studentEmail;
-    List<String> courses = new ArrayList<String>();
+
+    private String studentID;
+
+    private String studentName;
+
+    private String studentAddress;
+
+    private String studentEmail;
+
+    private List<String> courses;
     
     public DStudent(String studentID, String studentName, String studentAddress, String studentEmail,
             List<String> courses) {
